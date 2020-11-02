@@ -1,0 +1,36 @@
+version: "2"
+
+services:
+  fail2web:
+    image: fail2web:latest
+    container_name: fail2web
+    restart: always
+    ports:
+      - "127.0.0.1:8090:80"
+    environment:
+      - FAIL2REST_ADDR=http://fail2rest:8080/
+      - FAIL2REST_USER=fail2web-admin
+      - FAIL2REST_PASSWD=fail2web-admin
+    volumes:
+      - /srv/fail2web/:/srv/fail2web/
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+# we use this fork: https://github.com/strangeman/fail2rest
+  fail2rest:
+    image: fail2rest:latest
+    container_name: fail2rest
+    restart: always
+    environment:
+      - CONSUL_ENABLED=false
+      - FAIL2REST_AUTH_ENABLED=false
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - /srv/fail2rest/:/srv/fail2rest/
+
+      # Mount directory containing fail2ban.sock
+      - /var/run/fail2ban/:/var/run/fail2ban/
+      - /var/lib/fail2ban/:/var/lib/fail2ban/
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro

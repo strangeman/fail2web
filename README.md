@@ -15,30 +15,42 @@ fail2ban allows you to administer the following
 ![alt text](http://i.imgur.com/vDKYnql.gif "fail2web Demo2")
 
 ## Requirements
+
 fail2web communicates with fail2ban via a REST server called [fail2rest](https://github.com/Sean-Der/fail2rest)
 before fail2web can be used you will need an operational fail2rest instance.
 
 fail2web has been reported to work on IE8 or newer, but is not actively tested on older platforms.
 
 ## Installing
+
 A guide to install fail2web on Ubuntu can be found [here](http://siobud.com/blog/installing-fail2web)
 
 If you find any errors open an PR against the markdown [here](https://github.com/Sean-Der/sioBuD.com/blob/master/lisp/blog/installing-fail2web.md)
 
+### Docker
+
+* To build simply run `docker build -t fail2web:sampletag .`
+* Sample `docker-compose.yml` located in the root directory
+
+Many thanks to <https://github.com/Monogramm/docker-fail2web>
+
 ### Production
+
 To install the production build of fail2web download the newest release. A fully built release will then be in the
 `web` directory. Now you just need to serve the index.html, you can find further instructions [here](https://github.com/Sean-Der/fail2web#deploying-and-configuration)
 
 ### Development
+
 * **Install build requirements**
-    * nodejs and npm for browserify (not a runtime requirement) [Installing Node.js](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager)
+  * nodejs and npm for browserify (not a runtime requirement) [Installing Node.js](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager)
 * **Install libraries**
-    * execute `npm install` in the root of the fail2web repository
+  * execute `npm install` in the root of the fail2web repository
 * **Building**
-    * When writing code run `npm run watch` this will rebuild web/bundle.js on every change
-    * When deploying run `npm run build` this will build once and exit
+  * When writing code run `npm run watch` this will rebuild web/bundle.js on every change
+  * When deploying run `npm run build` this will build once and exit
 
 ## Deploying and Configuration
+
 fail2web is best accessed via a HTTP server, you can find example HTTP server configs [here](https://github.com/Sean-Der/fail2web/tree/master/http-configs)
 
 Fail2web has only one configuration option available via config.json in the root of the web folder.
@@ -46,12 +58,14 @@ This config option allows you to specify the path to your fail2rest handler. Cur
 which is what all the example HTTP configs are configured to do.
 
 ## Security
+
 It is very important that you configured fail2rest correctly, a public facing fail2rest server could be very dangerous
 (someone could add inclusive regexes, remove themselves from the banned IP lists etc..)
 
 Out of the box fail2rest has no authentication, and I have no plans of rolling my own authentication.
 
 ### HTTP Basic Auth
+
 The HTTP configs are both set to use HTTP basic auth, this and SSL should be the absolute minimum security
 requirements. In both HTTP configs you will see a placeholder with the label of `YOUR_HTPASSWD_FILE`
 
@@ -59,16 +73,19 @@ To generate a HTTPASSWD file you can use the `htpasswd` util distributed with Ap
 and `htpasswd -c YOUR_HTPASSWD_FILE USERNAME` will create it.
 
 ### SSH Tunnel
+
 I also recommend only serving fail2web/fail2rest on loopback only. You would access the server via a
 SSH tunnel, you can find more info [Here](http://www.revsys.com/writings/quicktips/ssh-tunnel.html)
 
 ## Getting Help
+
 Please make a GitHub issue, this will allow others in the future to find the issue in the future.
 
 Most of the time I will not be able to respond to emails in a timely manner, however with GitHub issues I try
 my best to keep the count 0.
 
 ## License
+
 The MIT License (MIT)
 
 Copyright (c) 2014 Sean DuBois

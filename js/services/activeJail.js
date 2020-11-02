@@ -10,7 +10,7 @@ angular.module(module.exports, [require('./globalConfig'),
   service('activeJail', ['$http', 'globalConfig', 'global', 'notifications', function($http, globalConfig, global, notifications) {
     var activeJail = {name: null,
                       currentView: '',
-                      testFailRegex: {},
+                      testfail_regex: {},
                       data: {} };
     return {
       set: function(name) {
@@ -34,15 +34,15 @@ angular.module(module.exports, [require('./globalConfig'),
         globalConfig.then(function(config) {
           $http({method: 'GET', url: config.fail2rest + 'jail/' + activeJail.name}).
             success(function(data) {
-              if (alerts && activeJail.data.IPList) {
-                _.forEach(_.difference(activeJail.data.IPList, data.IPList), function(ip) {
+              if (alerts && activeJail.data.ip_list) {
+                _.forEach(_.difference(activeJail.data.ip_list, data.ip_list), function(ip) {
                   notifications.add({message: ip + ' has been unbanned', type: 'warning'});
                 });
-                _.forEach(_.difference(data.IPList, activeJail.data.IPList), function(ip) {
+                _.forEach(_.difference(data.ip_list, activeJail.data.ip_list), function(ip) {
                   notifications.add({message: ip + ' has been banned', type: 'warning'});
                 });
               }
-              activeJail.testFailRegex = {};
+              activeJail.testfail_regex = {};
               activeJail.data = data;
           }.bind(this)).
             error(notifications.fromHTTPError);
@@ -50,12 +50,12 @@ angular.module(module.exports, [require('./globalConfig'),
       },
       banIPAddress: function(ipAddress) {
         globalConfig.then(function(config) {
-          $http({method: 'POST', data: {IP: ipAddress }, url: config.fail2rest + 'jail/' + activeJail.name + '/bannedip'}).
+          $http({method: 'POST', data: {ip: ipAddress }, url: config.fail2rest + 'jail/' + activeJail.name + '/ban'}).
           success(function() {
-            if (activeJail.data.IPList.indexOf(ipAddress) === -1) {
-                activeJail.data.IPList.push(ipAddress);
-                activeJail.data.currentlyBanned += 1;
-                activeJail.data.totalBanned += 1;
+            if (activeJail.data.ip_list.indexOf(ipAddress) === -1) {
+                activeJail.data.ip_list.push(ipAddress);
+                activeJail.data.currently_banned += 1;
+                activeJail.data.total_banned  += 1;
             }
           }).
           error(notifications.fromHTTPError);
@@ -63,61 +63,43 @@ angular.module(module.exports, [require('./globalConfig'),
       },
       unBanIPAddress: function(ipAddress) {
         globalConfig.then(function(config) {
-          $http({method: 'DELETE', data: {IP: ipAddress }, url: config.fail2rest + 'jail/' + activeJail.name + '/bannedip'}).
+          $http({ method: 'POST', data: {ip: ipAddress }, url: config.fail2rest + 'jail/' + activeJail.name + '/unban'}).
           success(function() {
-            var index = activeJail.data.IPList.indexOf(ipAddress);
+            var index = activeJail.data.ip_list.indexOf(ipAddress);
             if (index !== -1) {
-              activeJail.data.IPList.splice(index, 1);
-              activeJail.data.currentlyBanned -= 1;
+              activeJail.data.ip_list.splice(index, 1);
+              activeJail.data.currently_banned -= 1;
             }
           }).
           error(notifications.fromHTTPError);
         });
       },
-      deleteFailRegex: function(regex) {
+      deletefail_regex: function(regex) {
         globalConfig.then(function(config) {
-          $http({method: 'DELETE', data: {FailRegex: regex}, url: config.fail2rest + 'jail/' + activeJail.name + '/failregex'}).
+          $http({method: 'DELETE', data: {fail_regex: regex}, url: config.fail2rest + 'jail/' + activeJail.name + '/failregex'}).
           success(function() {
-            var index = activeJail.data.failRegexes.indexOf(regex);
+            var index = activeJail.data.fail_regexes.indexOf(regex);
             if (index !== -1) {
-              activeJail.data.failRegexes.splice(index, 1);
+              activeJail.data.fail_regexes.splice(index, 1);
             }
           }).
           error(notifications.fromHTTPError);
         });
       },
-      addFailRegex: function(regex) {
+      addfail_regex: function(regex) {
         globalConfig.then(function(config) {
-          $http({method: 'POST', data: {FailRegex: regex}, url: config.fail2rest + 'jail/' + activeJail.name + '/failregex'}).
+          $http({method: 'POST', data: {fail_regex: regex}, url: config.fail2rest + 'jail/' + activeJail.name + '/failregex'}).
           success(function() {
-            activeJail.data.failRegexes.push(regex);
+            activeJail.data.fail_regexes.push(regex);
           }).
           error(notifications.fromHTTPError);
         });
       },
-      setMaxRetry: function(maxRetry) {
+      testfail_regex: function(failRegex) {
         globalConfig.then(function(config) {
-          $http({method: 'POST', data: {MaxRetry: maxRetry}, url: config.fail2rest + 'jail/' + activeJail.name + '/maxretry'}).
-          error(notifications.fromHTTPError);
-        });
-      },
-      setFindTime: function(findTime) {
-        globalConfig.then(function(config) {
-          $http({method: 'POST', data: {FindTime: findTime}, url: config.fail2rest + 'jail/' + activeJail.name + '/findtime'}).
-          error(notifications.fromHTTPError);
-        });
-      },
-      setUseDNS: function(useDNS) {
-        globalConfig.then(function(config) {
-          $http({method: 'POST', data: {UseDNS: useDNS}, url: config.fail2rest + 'jail/' + activeJail.name + '/usedns'}).
-          error(notifications.fromHTTPError);
-        });
-      },
-      testFailRegex: function(failRegex) {
-        globalConfig.then(function(config) {
-          $http({method: 'POST', data: {FailRegex: failRegex}, url: config.fail2rest + 'jail/' + activeJail.name + '/testfailregex'}).
+          $http({method: 'POST', data: {fail_regex: failRegex}, url: config.fail2rest + 'jail/' + activeJail.name + '/testfailregex'}).
           success(function(data) {
-            activeJail.testFailRegex = data;
+            activeJail.testfail_regex = data;
           }).
           error(notifications.fromHTTPError);
         });

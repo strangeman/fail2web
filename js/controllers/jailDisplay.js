@@ -25,19 +25,14 @@ angular.module(module.exports, [ require('../services/activeJail'),
         $scope.clickUnBanIPAddress = function(ipAddress) {
           activeJail.unBanIPAddress(ipAddress);
         };
-        $scope.clickDeleteFailRegex = function(regex) {
-          activeJail.deleteFailRegex(regex);
+        $scope.clickDeletefail_regex = function(regex) {
+          activeJail.deletefail_regex(regex);
         };
-        $scope.clickAddFailRegex = function(regex) {
-          activeJail.addFailRegex(regex);
+        $scope.clickAddfail_regex = function(regex) {
+          activeJail.addfail_regex(regex);
         };
-        $scope.clickTestFailRegex = function(regex) {
-          activeJail.testFailRegex(regex);
-        };
-        $scope.clickOverviewUpdate = function() {
-          activeJail.setMaxRetry($scope.activeJail.data.maxRetry);
-          activeJail.setFindTime($scope.activeJail.data.findTime);
-          activeJail.setUseDNS($scope.activeJail.data.useDNS);
+        $scope.clickTestfail_regex = function(regex) {
+          activeJail.testfail_regex(regex);
         };
         $scope.clickRunWHOIS = function(ipAddress) {
           globalConfig.then(function(config) {
